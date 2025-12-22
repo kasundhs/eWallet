@@ -1,7 +1,5 @@
 package org.example;
 
-import org.example.Account;
-
 import java.util.LinkedList;
 
 public class Main {
@@ -22,7 +20,7 @@ public class Main {
 
         walletService.createAccount(
                 1002L,
-                "Amal Perera",
+                "Nipun Perera",
                 "199756789012",
                 30000.00
         );
@@ -33,14 +31,15 @@ public class Main {
         Account acc1 = walletService.getAccountInfo(1001L);
         Account acc2 = walletService.getAccountInfo(1002L);
 
-        System.out.println("Account Number : " + acc1.accountNumber);
-        System.out.println("Holder Name    : " + acc1.holderName);
-        System.out.println("NIC            : " + acc1.nic);
-        System.out.println("Balance        : " + acc1.getBalance());
-
         LinkedList<Account> acc = new LinkedList<>();
         acc.add(acc1);
         acc.add(acc2);
+        for(Account account : acc){
+            System.out.println("Account Number : " + account.accountNumber);
+            System.out.println("Holder Name    : " + account.holderName);
+            System.out.println("NIC            : " + account.nic);
+            System.out.println("Balance        : " + account.getBalance());
+        }
 
         // ===============================
         // SAME-PARTITION TRANSFER

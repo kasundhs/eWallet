@@ -10,7 +10,7 @@ public class ReplicaGroup {
 
     public ReplicaGroup(List<PartitionReplica> replicas) {
         this.replicas = replicas;
-        this.leader = replicas.stream().filter(r -> r.isLeader).findFirst().get();
+        this.leader = replicas.stream().filter(replica -> replica.isLeader).findFirst().get();
     }
 
     public synchronized PartitionReplica getLeader() {
@@ -21,10 +21,10 @@ public class ReplicaGroup {
     }
 
     private void electNewLeader() {
-        for (PartitionReplica r : replicas) {
-            if (r.alive) {
-                r.isLeader = true;
-                leader = r;
+        for (PartitionReplica replica : replicas) {
+            if (replica.alive) {
+                replica.isLeader = true;
+                leader = replica;
                 System.out.println("New leader selected : "+leader);
                 return;
             }
@@ -33,9 +33,9 @@ public class ReplicaGroup {
     }
 
     public synchronized void replicate(Account account) {
-        for (PartitionReplica r : replicas) {
-            if (r.alive) {
-                r.store.put(account.accountNumber, account);
+        for (PartitionReplica replica : replicas) {
+            if (replica.alive) {
+                replica.store.put(account.accountNumber, account);
             }
         }
     }

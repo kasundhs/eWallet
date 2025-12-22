@@ -8,8 +8,7 @@ public class PartitionResolver {
         this.partitions = partitions;
     }
 
-    public int resolve(long accountNumber) {
-
+    public int resolvePartitionId(long accountNumber) {
         return (int) (accountNumber % partitions);
     }
 }

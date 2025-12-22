@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.Account;
 import wallet.partition.PartitionResolver;
 import wallet.partition.WalletPartition;
 import wallet.replication.PartitionReplica;
@@ -37,7 +36,7 @@ public class WalletService {
     // Account Creation (Clerk)
     // ===============================
     public void createAccount(long accountNumber, String name, String nic, double balance) {
-        int partitionId = resolver.resolve(accountNumber);
+        int partitionId = resolver.resolvePartitionId(accountNumber);
         partitions.get(partitionId).createAccount(accountNumber, name, nic, balance);
     }
 
@@ -45,28 +44,28 @@ public class WalletService {
     // Balance / Info Inquiry
     // ===============================
     public Account getAccountInfo(long accountNumber) {
-        int partitionId = resolver.resolve(accountNumber);
+        int partitionId = resolver.resolvePartitionId(accountNumber);
         return partitions.get(partitionId).getAccount(accountNumber);
     }
 
     // ===============================
     // Fund Transfer
     // ===============================
-    public void transfer(long from, long to, double amount) {
+    public void transfer(long fromAcc, long toAcc, double amount) {
 
-        int p1 = resolver.resolve(from);
-        int p2 = resolver.resolve(to);
+        int p1 = resolver.resolvePartitionId(fromAcc);
+        int p2 = resolver.resolvePartitionId(toAcc);
 
         if (p1 == p2) {
             // Same-partition transfer
-            partitions.get(p1).transfer(from, to, amount);
+            partitions.get(p1).transfer(fromAcc, toAcc, amount);
         } else {
-            // Cross-partition transfer (2PC)
+            // Cross-partition transfer (between 2 partitions)
             TwoPhaseCommitService.transfer(
                     partitions.get(p1),
                     partitions.get(p2),
-                    from,
-                    to,
+                    fromAcc,
+                    toAcc,
                     amount
             );
         }
