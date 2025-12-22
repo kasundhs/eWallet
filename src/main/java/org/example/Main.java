@@ -2,6 +2,8 @@ package org.example;
 
 import org.example.Account;
 
+import java.util.LinkedList;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -29,11 +31,16 @@ public class Main {
         // Balance inquiry
         // ===============================
         Account acc1 = walletService.getAccountInfo(1001L);
+        Account acc2 = walletService.getAccountInfo(1002L);
 
         System.out.println("Account Number : " + acc1.accountNumber);
         System.out.println("Holder Name    : " + acc1.holderName);
         System.out.println("NIC            : " + acc1.nic);
         System.out.println("Balance        : " + acc1.getBalance());
+
+        LinkedList<Account> acc = new LinkedList<>();
+        acc.add(acc1);
+        acc.add(acc2);
 
         // ===============================
         // SAME-PARTITION TRANSFER

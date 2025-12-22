@@ -9,6 +9,7 @@ public class PartitionResolver {
     }
 
     public int resolve(long accountNumber) {
+
         return (int) (accountNumber % partitions);
     }
 }

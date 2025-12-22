@@ -11,11 +11,8 @@ public class WalletPartition {
         this.replicaGroup = replicaGroup;
     }
 
-    public synchronized void createAccount(
-            long accNo, String name, String nic, double balance) {
-
+    public synchronized void createAccount(long accNo, String name, String nic, double balance) {
         var leader = replicaGroup.getLeader();
-
         if (leader.store.containsKey(accNo))
             throw new IllegalArgumentException("Account already exists");
 
@@ -29,9 +26,7 @@ public class WalletPartition {
         return acc;
     }
     public synchronized void transfer(long from, long to, double amount) {
-
         var leader = replicaGroup.getLeader();
-
         Account src = leader.store.get(from);
         Account dst = leader.store.get(to);
 

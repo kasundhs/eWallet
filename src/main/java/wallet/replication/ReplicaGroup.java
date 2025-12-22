@@ -25,7 +25,7 @@ public class ReplicaGroup {
             if (r.alive) {
                 r.isLeader = true;
                 leader = r;
-                System.out.println("New leader elected");
+                System.out.println("New leader selected : "+leader);
                 return;
             }
         }

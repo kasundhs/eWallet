@@ -27,8 +27,7 @@ public class WalletService {
             PartitionReplica r2 = new PartitionReplica(false);
             PartitionReplica r3 = new PartitionReplica(false);
 
-            ReplicaGroup replicaGroup =
-                    new ReplicaGroup(List.of(r1, r2, r3));
+            ReplicaGroup replicaGroup = new ReplicaGroup(List.of(r1, r2, r3)); // Set replicas standby
 
             partitions.add(new WalletPartition(replicaGroup));
         }
@@ -39,8 +38,7 @@ public class WalletService {
     // ===============================
     public void createAccount(long accountNumber, String name, String nic, double balance) {
         int partitionId = resolver.resolve(accountNumber);
-        partitions.get(partitionId)
-                .createAccount(accountNumber, name, nic, balance);
+        partitions.get(partitionId).createAccount(accountNumber, name, nic, balance);
     }
 
     // ===============================
@@ -48,8 +46,7 @@ public class WalletService {
     // ===============================
     public Account getAccountInfo(long accountNumber) {
         int partitionId = resolver.resolve(accountNumber);
-        return partitions.get(partitionId)
-                .getAccount(accountNumber);
+        return partitions.get(partitionId).getAccount(accountNumber);
     }
 
     // ===============================
