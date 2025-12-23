@@ -4,7 +4,6 @@ import wallet.partition.PartitionResolver;
 import wallet.partition.WalletPartition;
 import wallet.replication.PartitionReplica;
 import wallet.replication.ReplicaGroup;
-import wallet.partition.TwoPhaseCommitService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +57,10 @@ public class WalletService {
 
         if (p1 == p2) {
             // Same-partition transfer
-            partitions.get(p1).transfer(fromAcc, toAcc, amount);
+            FundTransfers.transfer(partitions.get(p1),fromAcc, toAcc, amount);
         } else {
             // Cross-partition transfer (between 2 partitions)
-            TwoPhaseCommitService.transfer(
+            FundTransfers.transfer(
                     partitions.get(p1),
                     partitions.get(p2),
                     fromAcc,

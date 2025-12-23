@@ -1,7 +1,5 @@
 package org.example;
 
-import java.util.LinkedList;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -30,19 +28,11 @@ public class Main {
         // ===============================
         Account acc1 = walletService.getAccountInfo(1001L);
         Account acc2 = walletService.getAccountInfo(1002L);
-
-        LinkedList<Account> acc = new LinkedList<>();
-        acc.add(acc1);
-        acc.add(acc2);
-        for(Account account : acc){
-            System.out.println("Account Number : " + account.accountNumber);
-            System.out.println("Holder Name    : " + account.holderName);
-            System.out.println("NIC            : " + account.nic);
-            System.out.println("Balance        : " + account.getBalance());
-        }
+        acc1.printAccountDetails();
+        acc2.printAccountDetails();
 
         // ===============================
-        // SAME-PARTITION TRANSFER
+        // CROSS-PARTITION TRANSFER
         // ===============================
         System.out.println("\n--- Cross partition transfer ---");
         walletService.transfer(1001L, 1002L, 5000);
@@ -53,7 +43,7 @@ public class Main {
                 walletService.getAccountInfo(1002L).getBalance());
 
         // ===============================
-        // CROSS-PARTITION TRANSFER
+        // SAME-PARTITION TRANSFER
         // ===============================
         walletService.createAccount(
                 1003L,
@@ -61,6 +51,8 @@ public class Main {
                 "199945612345",
                 20000.00
         );
+        Account acc3 = walletService.getAccountInfo(1003L);
+        acc3.printAccountDetails();
 
         System.out.println("\n--- Same partition transfer ---");
         walletService.transfer(1001L, 1003L, 3000);

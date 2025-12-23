@@ -22,6 +22,15 @@ public class Account {
         balance += amount;
     }
 
+    public synchronized void printAccountDetails(){
+        System.out.println("\n===============================\nAccount Details");
+        System.out.println("Account Number : " + accountNumber);
+        System.out.println("Holder Name    : " + holderName);
+        System.out.println("NIC            : " + nic);
+        System.out.println("Balance        : " + balance);
+        System.out.println("===============================");
+    }
+
     public synchronized void debit(double amount) {
         if (balance < amount)
             throw new IllegalStateException("Insufficient balance");

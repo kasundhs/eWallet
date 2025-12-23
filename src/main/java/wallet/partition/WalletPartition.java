@@ -25,23 +25,6 @@ public class WalletPartition {
             throw new IllegalArgumentException("Account not found");
         return acc;
     }
-    public synchronized void transfer(long from, long to, double amount) {
-        var leader = replicaGroup.getLeader();
-        Account src = leader.store.get(from);
-        Account dst = leader.store.get(to);
-
-        if (src == null || dst == null)
-            throw new IllegalArgumentException("Invalid account");
-
-        // Atomic section (single leader)
-        System.out.println("Same Partition Transfers. No Additional fee Apply");
-        src.debit(amount);
-        dst.credit(amount);
-
-        // Replicate updated state
-        replicaGroup.replicate(src);
-        replicaGroup.replicate(dst);
-    }
     public ReplicaGroup getReplicaGroup() {
         return replicaGroup;
     }
