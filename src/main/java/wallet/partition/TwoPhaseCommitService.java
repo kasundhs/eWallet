@@ -3,11 +3,11 @@ package wallet.partition;
 public class TwoPhaseCommitService {
 
     public static synchronized void transfer(
-            WalletPartition sourceAccountPartition,
-            WalletPartition destinationAccountPartition,
-            long fromAcc,
-            long toAcc,
-            double amount) {
+        WalletPartition sourceAccountPartition,
+        WalletPartition destinationAccountPartition,
+        long fromAcc,
+        long toAcc,
+        double amount) {
 
         try {
             // Phase 1: Prepare
@@ -15,6 +15,7 @@ public class TwoPhaseCommitService {
                 throw new IllegalStateException("Insufficient funds");
 
             // Phase 2: Commit
+            System.out.println("Cross Partition Transfer is being Processing. Additional Charge Maybe Apply");
             sourceAccountPartition.getAccount(fromAcc).debit(amount);
             destinationAccountPartition.getAccount(toAcc).credit(amount);
 

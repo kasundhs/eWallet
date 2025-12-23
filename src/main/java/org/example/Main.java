@@ -44,7 +44,7 @@ public class Main {
         // ===============================
         // SAME-PARTITION TRANSFER
         // ===============================
-        System.out.println("\n--- Same partition transfer ---");
+        System.out.println("\n--- Cross partition transfer ---");
         walletService.transfer(1001L, 1002L, 5000);
 
         System.out.println("1001 Balance: " +
@@ -62,7 +62,7 @@ public class Main {
                 20000.00
         );
 
-        System.out.println("\n--- Cross partition transfer ---");
+        System.out.println("\n--- Same partition transfer ---");
         walletService.transfer(1001L, 1003L, 3000);
 
         System.out.println("1001 Balance: " +

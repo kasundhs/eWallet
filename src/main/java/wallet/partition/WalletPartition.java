@@ -34,6 +34,7 @@ public class WalletPartition {
             throw new IllegalArgumentException("Invalid account");
 
         // Atomic section (single leader)
+        System.out.println("Same Partition Transfers. No Additional fee Apply");
         src.debit(amount);
         dst.credit(amount);
 
