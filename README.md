@@ -168,6 +168,16 @@ For detailed testing instructions including:
 
 See [TESTING_GUIDE.md](TESTING_GUIDE.md)
 
+## Failover Testing
+
+The system includes comprehensive failover testing capabilities:
+
+- **Web UI**: Navigate to `http://localhost:8080/failover-test.html` for interactive failover testing
+- **REST API**: Use `/api/admin` endpoints to simulate failures and check status
+- **Test Scenarios**: Automated scenarios for single/multiple replica failures
+
+For detailed failover testing instructions, see [FAILOVER_TESTING_GUIDE.md](FAILOVER_TESTING_GUIDE.md)
+
 ## High Availability
 
 The system automatically handles:

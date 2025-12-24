@@ -9,6 +9,7 @@ import wallet.replication.ReplicaGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WalletService {
@@ -73,10 +74,81 @@ public class WalletService {
         }
     }
     public void simulateLeaderFailure(int partitionId) {
+        if (partitionId < 0 || partitionId >= partitions.size()) {
+            throw new IllegalArgumentException("Invalid partition ID: " + partitionId);
+        }
+        System.out.println("\n=== Simulating Leader Failure for Partition " + partitionId + " ===");
         partitions.get(partitionId)
                 .getReplicaGroup()
                 .getLeader()
                 .alive = false;
+        System.out.println("Leader marked as failed. New leader will be elected on next operation.");
+    }
+
+    public void simulateReplicaFailure(int partitionId, int replicaIndex) {
+        if (partitionId < 0 || partitionId >= partitions.size()) {
+            throw new IllegalArgumentException("Invalid partition ID: " + partitionId);
+        }
+        var replicaGroup = partitions.get(partitionId).getReplicaGroup();
+        var replicas = replicaGroup.getReplicas();
+        if (replicaIndex < 0 || replicaIndex >= replicas.size()) {
+            throw new IllegalArgumentException("Invalid replica index: " + replicaIndex);
+        }
+        System.out.println("\n=== Simulating Replica " + replicaIndex + " Failure for Partition " + partitionId + " ===");
+        replicas.get(replicaIndex).alive = false;
+        System.out.println("Replica " + replicaIndex + " marked as failed.");
+    }
+
+    public Map<String, Object> getPartitionStatus(int partitionId) {
+        if (partitionId < 0 || partitionId >= partitions.size()) {
+            throw new IllegalArgumentException("Invalid partition ID: " + partitionId);
+        }
+        
+        var replicaGroup = partitions.get(partitionId).getReplicaGroup();
+        var replicas = replicaGroup.getReplicas();
+        var leader = replicaGroup.getLeader();
+        
+        Map<String, Object> status = new java.util.HashMap<>();
+        status.put("partitionId", partitionId);
+        status.put("totalReplicas", replicas.size());
+        
+        java.util.List<Map<String, Object>> replicaStatus = new java.util.ArrayList<>();
+        for (int i = 0; i < replicas.size(); i++) {
+            var replica = replicas.get(i);
+            Map<String, Object> replicaInfo = new java.util.HashMap<>();
+            replicaInfo.put("index", i);
+            replicaInfo.put("isLeader", replica.isLeader);
+            replicaInfo.put("isAlive", replica.alive);
+            replicaInfo.put("accountsCount", replica.store.size());
+            replicaStatus.add(replicaInfo);
+        }
+        status.put("replicas", replicaStatus);
+        
+        // Find leader index
+        int leaderIndex = -1;
+        for (int i = 0; i < replicas.size(); i++) {
+            if (replicas.get(i) == leader) {
+                leaderIndex = i;
+                break;
+            }
+        }
+        status.put("currentLeaderIndex", leaderIndex);
+        status.put("aliveReplicasCount", replicas.stream().mapToInt(r -> r.alive ? 1 : 0).sum());
+        
+        return status;
+    }
+
+    public Map<String, Object> getAllPartitionsStatus() {
+        Map<String, Object> allStatus = new java.util.HashMap<>();
+        allStatus.put("totalPartitions", partitions.size());
+        
+        java.util.List<Map<String, Object>> partitionsStatus = new java.util.ArrayList<>();
+        for (int i = 0; i < partitions.size(); i++) {
+            partitionsStatus.add(getPartitionStatus(i));
+        }
+        allStatus.put("partitions", partitionsStatus);
+        
+        return allStatus;
     }
 
 }
