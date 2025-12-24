@@ -1,5 +1,7 @@
 package org.example;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import wallet.partition.PartitionResolver;
 import wallet.partition.WalletPartition;
 import wallet.replication.PartitionReplica;
@@ -8,12 +10,13 @@ import wallet.replication.ReplicaGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class WalletService {
 
     private final List<WalletPartition> partitions;
     private final PartitionResolver resolver;
 
-    public WalletService(int numberOfPartitions) {
+    public WalletService(@Value("${wallet.partitions:2}") int numberOfPartitions) {
 
         this.partitions = new ArrayList<>();
         this.resolver = new PartitionResolver(numberOfPartitions);
