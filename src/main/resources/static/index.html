@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eWallet System - Frontend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+
+        .tab-button:hover {
+            background: #f0f0f0;
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .account-display {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .account-display h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .account-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 eWallet System</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('create')">Create Account</button>
+            <button class="tab-button" onclick="showTab('view')">View Account</button>
+            <button class="tab-button" onclick="showTab('transfer')">Transfer Funds</button>
+        </div>
+
+        <!-- Create Account Tab -->
+        <div id="create" class="tab-content active">
+            <h2>Create New Account</h2>
+            <form id="createAccountForm" onsubmit="createAccount(event)">
+                <div class="form-group">
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="number" id="accountNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="holderName">Holder Name:</label>
+                    <input type="text" id="holderName" required>
+                </div>
+                <div class="form-group">
+                    <label for="nic">NIC:</label>
+                    <input type="text" id="nic" required>
+                </div>
+                <div class="form-group">
+                    <label for="initialBalance">Initial Balance:</label>
+                    <input type="number" id="initialBalance" step="0.01" required>
+                </div>
+                <button type="submit">Create Account</button>
+            </form>
+            <div id="createResult" class="result"></div>
+            <div id="createdAccountDisplay" class="account-display" style="display: none;"></div>
+        </div>
+
+        <!-- View Account Tab -->
+        <div id="view" class="tab-content">
+            <h2>View Account Information</h2>
+            <form id="viewAccountForm" onsubmit="viewAccount(event)">
+                <div class="form-group">
+                    <label for="viewAccountNumber">Account Number:</label>
+                    <input type="number" id="viewAccountNumber" required>
+                </div>
+                <button type="submit">View Account</button>
+            </form>
+            <div id="viewResult" class="result"></div>
+            <div id="accountDisplay" class="account-display" style="display: none;"></div>
+        </div>
+
+        <!-- Transfer Funds Tab -->
+        <div id="transfer" class="tab-content">
+            <h2>Transfer Funds</h2>
+            <form id="transferForm" onsubmit="transferFunds(event)">
+                <div class="two-column">
+                    <div class="form-group">
+                        <label for="fromAccount">From Account Number:</label>
+                        <input type="number" id="fromAccount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="toAccount">To Account Number:</label>
+                        <input type="number" id="toAccount" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" step="0.01" required>
+                </div>
+                <button type="submit">Transfer Funds</button>
+            </form>
+            <div id="transferResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function createAccount(event) {
+            event.preventDefault();
+            const resultDiv = document.getElementById('createResult');
+            const accountDisplay = document.getElementById('createdAccountDisplay');
+            
+            const accountData = {
+                accountNumber: parseInt(document.getElementById('accountNumber').value),
+                holderName: document.getElementById('holderName').value,
+                nic: document.getElementById('nic').value,
+                balance: parseFloat(document.getElementById('initialBalance').value)
+            };
+
+            resultDiv.className = 'result';
+            accountDisplay.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(accountData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = result.message;
+                    displayAccount(result.data, accountDisplay);
+                    accountDisplay.style.display = 'block';
+                    document.getElementById('createAccountForm').reset();
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = result.message || 'Failed to create account';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+            }
+        }
+
+        async function viewAccount(event) {
+            event.preventDefault();
+            const resultDiv = document.getElementById('viewResult');
+            const accountDisplay = document.getElementById('accountDisplay');
+            const accountNumber = document.getElementById('viewAccountNumber').value;
+
+            resultDiv.className = 'result';
+            accountDisplay.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/accounts/${accountNumber}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = 'Account found successfully';
+                    displayAccount(result.data, accountDisplay);
+                    accountDisplay.style.display = 'block';
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = result.message || 'Account not found';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+            }
+        }
+
+        async function transferFunds(event) {
+            event.preventDefault();
+            const resultDiv = document.getElementById('transferResult');
+
+            const transferData = {
+                fromAccount: parseInt(document.getElementById('fromAccount').value),
+                toAccount: parseInt(document.getElementById('toAccount').value),
+                amount: parseFloat(document.getElementById('amount').value)
+            };
+
+            resultDiv.className = 'result';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/transfers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(transferData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = result.data || result.message;
+                    document.getElementById('transferForm').reset();
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = result.message || 'Transfer failed';
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+            }
+        }
+
+        function displayAccount(account, container) {
+            container.innerHTML = `
+                <h3>Account Details</h3>
+                <div class="account-info">
+                    <div class="info-item">
+                        <div class="info-label">Account Number</div>
+                        <div class="info-value">${account.accountNumber}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Holder Name</div>
+                        <div class="info-value">${account.holderName}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">NIC</div>
+                        <div class="info-value">${account.nic}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Balance</div>
+                        <div class="info-value">$${account.balance.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
+

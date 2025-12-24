@@ -24,15 +24,30 @@ The system consists of:
 - **Replication**: Each partition has 3 replicas (1 leader, 2 followers)
 - **RESTful API**: Standard REST endpoints for all operations
 
-## Running the Application
+## Quick Start
 
-### 1. Build the Project
+### Option 1: Using Run Scripts (Recommended)
+
+**Windows:**
+```bash
+run.bat
+```
+
+**Linux/Mac:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+### Option 2: Manual Start
+
+#### 1. Build the Project
 
 ```bash
 mvn clean install
 ```
 
-### 2. Run Wallet Service
+#### 2. Run Wallet Service
 
 ```bash
 mvn spring-boot:run -Dspring-boot.run.main-class=org.example.WalletApplication
@@ -45,12 +60,17 @@ java -jar target/CW2-BankingSystemManagement-1.0-SNAPSHOT.jar
 
 The wallet service will start on port 8080.
 
-### 3. Access the APIs
+### 3. Access the Application
 
-Services are available directly at:
-- Wallet Service: http://localhost:8080
+Once the backend is running:
 
-For a true microservices setup with API Gateway, deploy the gateway as a separate service that routes to this service.
+- **Frontend UI**: http://localhost:8080
+- **API Endpoints**: http://localhost:8080/api
+- **Health Check**: http://localhost:8080/actuator/health
+
+The frontend is automatically served from the backend, so just open your browser and navigate to http://localhost:8080 to start testing!
+
+For detailed testing instructions, see [TESTING_GUIDE.md](TESTING_GUIDE.md)
 
 ## API Endpoints
 
@@ -94,7 +114,16 @@ Edit `src/main/resources/application.properties` to configure:
 - Server port (default: 8080)
 - Number of partitions (default: 2)
 
-## Frontend Integration
+## Frontend
+
+A complete web frontend is included and automatically served when you start the backend. Simply navigate to **http://localhost:8080** in your browser after starting the application.
+
+The frontend provides:
+- **Create Account** - Form to create new accounts
+- **View Account** - Query account information by account number
+- **Transfer Funds** - Transfer money between accounts
+
+### Frontend Integration (For Custom Frontends)
 
 The API supports CORS and can be accessed from any frontend application. Example using fetch:
 
@@ -126,6 +155,18 @@ fetch('http://localhost:8080/api/transfers', {
   })
 });
 ```
+
+For more API examples, see [API_EXAMPLES.md](API_EXAMPLES.md)
+
+## Testing
+
+For detailed testing instructions including:
+- Frontend testing
+- API testing with cURL
+- Postman examples
+- Error case testing
+
+See [TESTING_GUIDE.md](TESTING_GUIDE.md)
 
 ## High Availability
 
