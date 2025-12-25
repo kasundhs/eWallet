@@ -1,4 +1,4 @@
-package org.example;
+package org.example.account;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -111,8 +111,8 @@ public class WalletService {
         Map<String, Object> status = new java.util.HashMap<>();
         status.put("partitionId", partitionId);
         status.put("totalReplicas", replicas.size());
-        
-        java.util.List<Map<String, Object>> replicaStatus = new java.util.ArrayList<>();
+
+        List<Map<String, Object>> replicaStatus = new ArrayList<>();
         for (int i = 0; i < replicas.size(); i++) {
             var replica = replicas.get(i);
             Map<String, Object> replicaInfo = new java.util.HashMap<>();

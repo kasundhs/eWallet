@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.ApiResponse;
-import org.example.WalletService;
+import org.example.account.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+public class FailoverController {
 
     @Autowired
     private WalletService walletService;

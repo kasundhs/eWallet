@@ -1,6 +1,6 @@
 package wallet.partition;
 
-import org.example.Account;
+import org.example.account.Account;
 import wallet.replication.ReplicaGroup;
 
 public class WalletPartition {

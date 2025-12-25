@@ -1,6 +1,6 @@
 package wallet.replication;
 
-import org.example.Account;
+import org.example.account.Account;
 import java.util.List;
 
 public class ReplicaGroup {

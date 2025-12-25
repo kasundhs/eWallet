@@ -1,10 +1,10 @@
 package org.example.controller;
 
-import org.example.Account;
+import org.example.account.Account;
 import org.example.dto.AccountResponse;
 import org.example.dto.ApiResponse;
 import org.example.dto.CreateAccountRequest;
-import org.example.WalletService;
+import org.example.account.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.account.Account;
+import org.example.account.WalletService;
+
 public class Main {
 
     public static void main(String[] args) {
