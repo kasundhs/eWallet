@@ -4,7 +4,7 @@ import org.example.Account;
 import org.example.dto.AccountResponse;
 import org.example.dto.ApiResponse;
 import org.example.dto.CreateAccountRequest;
-import org.example.service.WalletService;
+import org.example.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

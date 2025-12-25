@@ -2,9 +2,8 @@ package org.example.controller;
 
 import org.example.dto.ApiResponse;
 import org.example.dto.TransferRequest;
-import org.example.service.WalletService;
+import org.example.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
