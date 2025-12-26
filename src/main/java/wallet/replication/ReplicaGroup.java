@@ -51,7 +51,10 @@ public class ReplicaGroup {
     public List<PartitionReplica> getReplicas() {
         return replicas;
     }
-
+    /**
+     Here there is no any permanent DB.
+    So, to keep data after failover have to update replicas as well.
+     */
     public synchronized void replicate(Account account) {
         for (PartitionReplica replica : replicas) {
             if (replica.alive) {
