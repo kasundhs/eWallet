@@ -49,5 +49,8 @@ public class ApiResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    // These no usage methods are used in Spring/Jackson for JSON serialization/deserialization.
+    // So, they are required even if it is not directly accessed. (Used in HTML)
 }
 

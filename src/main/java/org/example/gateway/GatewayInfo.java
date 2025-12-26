@@ -8,11 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Gateway Information endpoint
- * In a production environment, you would use Spring Cloud Gateway
- * or a dedicated API Gateway service (like Zuul, Kong, etc.)
- * 
- * For this implementation, API requests go directly to the service endpoints:
+ * There are 2 apis use in this implementation, one for account handling and one for transfers.
  * - Account Service: http://localhost:8080/api/accounts
  * - Transfer Service: http://localhost:8080/api/transfers
  */
