@@ -16,6 +16,9 @@ public class AccountController {
 
     @Autowired
     private WalletService walletService;
+    // without Autowired, have to use private WalletService walletService = new WalletService();
+    // this is not a good practice. 
+    // otherwise walletService would be null and cause NullPointerException
 
     @PostMapping
     public ResponseEntity<ApiResponse<AccountResponse>> createAccount(@RequestBody CreateAccountRequest request) {
