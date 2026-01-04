@@ -16,22 +16,50 @@ public class WalletService {
 
     private final List<WalletPartition> partitions;
     private final PartitionResolver resolver;
+    private final int replicaPartitionId;
 
-    public WalletService(@Value("${wallet.partitions:2}") int numberOfPartitions) {
-
+    public WalletService(
+            @Value("${wallet.partitions:2}") int numberOfPartitions,
+            @Value("${wallet.replica.partition.id}") int replicaPartitionId,
+            @Value("${wallet.replica.index}") int replicaIndex,
+            @Value("${wallet.replica.is.leader:false}") boolean isLeader) {
+        
+        if (replicaPartitionId < 0 || replicaPartitionId >= numberOfPartitions) {
+            throw new IllegalArgumentException("Replica partition ID must be between 0 and " + (numberOfPartitions - 1));
+        }
+        
+        this.replicaPartitionId = replicaPartitionId;
         this.partitions = new ArrayList<>();
         this.resolver = new PartitionResolver(numberOfPartitions);
 
+        // Create only this partition with a single replica
+        PartitionReplica replica = new PartitionReplica(isLeader);
+        ReplicaGroup replicaGroup = new ReplicaGroup(List.of(replica));
+        
+        // Create empty partitions for other partition IDs (for resolver compatibility)
         for (int i = 0; i < numberOfPartitions; i++) {
-
-            // ---- create replicas ----
-            PartitionReplica r1 = new PartitionReplica(true);   // leader
-            PartitionReplica r2 = new PartitionReplica(false);
-            PartitionReplica r3 = new PartitionReplica(false);
-
-            ReplicaGroup replicaGroup = new ReplicaGroup(List.of(r1, r2, r3)); // Set replicas standby
-
-            partitions.add(new WalletPartition(replicaGroup));
+            if (i == replicaPartitionId) {
+                partitions.add(new WalletPartition(replicaGroup));
+            } else {
+                // Create empty partition (won't be used but keeps indices consistent)
+                PartitionReplica dummyReplica = new PartitionReplica(false);
+                ReplicaGroup dummyGroup = new ReplicaGroup(List.of(dummyReplica));
+                partitions.add(new WalletPartition(dummyGroup));
+            }
+        }
+        
+        System.out.println("[WalletService] Replica initialized: Partition " + replicaPartitionId + ", Replica " + replicaIndex + ", Leader: " + isLeader);
+    }
+    
+    /**
+     * Update the leader status of this replica
+     */
+    public void updateLeaderStatus(boolean isLeader) {
+        var replicaGroup = partitions.get(replicaPartitionId).getReplicaGroup();
+        var replicas = replicaGroup.getReplicas();
+        if (!replicas.isEmpty()) {
+            replicas.get(0).isLeader = isLeader;
+            System.out.println("[WalletService] Leader status updated: " + isLeader);
         }
     }
 
@@ -40,6 +68,13 @@ public class WalletService {
     // ===============================
     public void createAccount(long accountNumber, String name, String nic, double balance) {
         int partitionId = resolver.resolvePartitionId(accountNumber);
+        
+        if (partitionId != replicaPartitionId) {
+            throw new IllegalArgumentException(
+                "Account " + accountNumber + " belongs to partition " + partitionId + 
+                ", but this replica manages partition " + replicaPartitionId);
+        }
+        
         partitions.get(partitionId).createAccount(accountNumber, name, nic, balance);
     }
 
@@ -48,6 +83,13 @@ public class WalletService {
     // ===============================
     public Account getAccountInfo(long accountNumber) {
         int partitionId = resolver.resolvePartitionId(accountNumber);
+        
+        if (partitionId != replicaPartitionId) {
+            throw new IllegalArgumentException(
+                "Account " + accountNumber + " belongs to partition " + partitionId + 
+                ", but this replica manages partition " + replicaPartitionId);
+        }
+        
         return partitions.get(partitionId).getAccount(accountNumber);
     }
 
@@ -55,23 +97,18 @@ public class WalletService {
     // Fund Transfer
     // ===============================
     public void transfer(long fromAcc, long toAcc, double amount) {
-
         int p1 = resolver.resolvePartitionId(fromAcc);
         int p2 = resolver.resolvePartitionId(toAcc);
 
-        if (p1 == p2) {
-            // Same-partition transfer
-            FundTransfers.transfer(partitions.get(p1),fromAcc, toAcc, amount);
-        } else {
-            // Cross-partition transfer (between 2 partitions)
-            FundTransfers.transfer(
-                    partitions.get(p1),
-                    partitions.get(p2),
-                    fromAcc,
-                    toAcc,
-                    amount
-            );
+        // Only same-partition transfers are supported (each replica manages one partition)
+        if (p1 != replicaPartitionId || p2 != replicaPartitionId) {
+            throw new UnsupportedOperationException(
+                "Cross-partition transfers not supported. " +
+                "This replica manages partition " + replicaPartitionId);
         }
+
+        // Same-partition transfer
+        FundTransfers.transfer(partitions.get(p1), fromAcc, toAcc, amount);
     }
     public void simulateLeaderFailure(int partitionId) {
         if (partitionId < 0 || partitionId >= partitions.size()) {
