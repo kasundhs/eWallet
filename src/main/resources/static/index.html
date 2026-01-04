@@ -272,7 +272,12 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8080/api';
+        // Dynamically determine API base URL from current location
+        const getApiBaseUrl = () => {
+            const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+            return `${window.location.protocol}//${window.location.hostname}:${port}/api`;
+        };
+        const API_BASE_URL = getApiBaseUrl();
 
         function showTab(tabName) {
             // Hide all tabs
@@ -326,7 +331,8 @@
                 }
             } catch (error) {
                 resultDiv.className = 'result error';
-                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+                const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port ${port}. If the leader failed, try accessing the frontend from another replica port (8081, 8082, etc.).`;
             }
         }
 
@@ -354,7 +360,8 @@
                 }
             } catch (error) {
                 resultDiv.className = 'result error';
-                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+                const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port ${port}. If the leader failed, try accessing the frontend from another replica port (8081, 8082, etc.).`;
             }
         }
 
@@ -391,7 +398,8 @@
                 }
             } catch (error) {
                 resultDiv.className = 'result error';
-                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port 8080.`;
+                const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+                resultDiv.textContent = `Error: ${error.message}. Make sure the backend is running on port ${port}. If the leader failed, try accessing the frontend from another replica port (8081, 8082, etc.).`;
             }
         }
 

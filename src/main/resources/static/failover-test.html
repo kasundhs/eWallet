@@ -325,7 +325,12 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8080/api';
+        // Dynamically determine API base URL from current location
+        const getApiBaseUrl = () => {
+            const port = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+            return `${window.location.protocol}//${window.location.hostname}:${port}/api`;
+        };
+        const API_BASE_URL = getApiBaseUrl();
 
         async function refreshStatus() {
             try {
