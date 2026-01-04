@@ -67,49 +67,23 @@ public class WalletService {
     // Account Creation (Clerk)
     // ===============================
     public void createAccount(long accountNumber, String name, String nic, double balance) {
-        int partitionId = resolver.resolvePartitionId(accountNumber);
-        
-        if (partitionId != replicaPartitionId) {
-            throw new IllegalArgumentException(
-                "Account " + accountNumber + " belongs to partition " + partitionId + 
-                ", but this replica manages partition " + replicaPartitionId);
-        }
-        
-        partitions.get(partitionId).createAccount(accountNumber, name, nic, balance);
+        partitions.get(replicaPartitionId).createAccount(accountNumber, name, nic, balance);
     }
 
     // ===============================
     // Balance / Info Inquiry
     // ===============================
     public Account getAccountInfo(long accountNumber) {
-        int partitionId = resolver.resolvePartitionId(accountNumber);
-        
-        if (partitionId != replicaPartitionId) {
-            throw new IllegalArgumentException(
-                "Account " + accountNumber + " belongs to partition " + partitionId + 
-                ", but this replica manages partition " + replicaPartitionId);
-        }
-        
-        return partitions.get(partitionId).getAccount(accountNumber);
+        return partitions.get(replicaPartitionId).getAccount(accountNumber);
     }
 
     // ===============================
     // Fund Transfer
     // ===============================
     public void transfer(long fromAcc, long toAcc, double amount) {
-        int p1 = resolver.resolvePartitionId(fromAcc);
-        int p2 = resolver.resolvePartitionId(toAcc);
-
-        // Only same-partition transfers are supported (each replica manages one partition)
-        if (p1 != replicaPartitionId || p2 != replicaPartitionId) {
-            throw new UnsupportedOperationException(
-                "Cross-partition transfers not supported. " +
-                "This replica manages partition " + replicaPartitionId);
-        }
-
-        // Same-partition transfer
-        FundTransfers.transfer(partitions.get(p1), fromAcc, toAcc, amount);
+        FundTransfers.transfer(partitions.get(replicaPartitionId), fromAcc, toAcc, amount);
     }
+
     public void simulateLeaderFailure(int partitionId) {
         if (partitionId < 0 || partitionId >= partitions.size()) {
             throw new IllegalArgumentException("Invalid partition ID: " + partitionId);
